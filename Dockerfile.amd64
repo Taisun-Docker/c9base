@@ -1,0 +1,31 @@
+FROM lsiobase/ubuntu:bionic
+
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG NPM_CONFIG_UNSAFE_PERM=true
+
+RUN \
+ echo "**** install build packages ****" && \
+ apt-get update && \
+ apt-get install -y \
+	g++ \
+	gcc \
+	git \
+	make \
+	python && \
+ echo "**** Compile Cloud9 from source ****" && \
+ git clone \
+	https://github.com/c9/core.git c9sdk && \
+ cd c9sdk && \
+ scripts/install-sdk.sh && \
+ echo "**** Restructure files for copy ****" && \
+ rm -Rf \
+	/root/.c9/tmp \
+	/c9sdk/.git && \
+ mkdir -p \
+	/buildout/root && \
+ mv \
+	/root/.c9 \
+	/buildout/root/.c9 && \
+ mv \
+	/c9sdk \
+	/buildout/

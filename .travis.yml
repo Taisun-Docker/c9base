@@ -1,0 +1,28 @@
+sudo: true
+
+language: bash
+
+services:
+  - docker
+
+env:
+  global:
+    - DEBIAN_FRONTEND="noninteractive"
+    - DOCKERHUB_LIVE="taisun/dev_cloud9"
+
+jobs:
+  include:
+    - stage: "Build Containers"
+      name: "Build x86"
+      before_install:
+        - /bin/bash pre_install
+      script: ./builder.sh base amd64
+    - script: ./builder.sh base arm64v8
+      before_install:
+        - /bin/bash pre_install
+      name: "Build arm64"
+    - script: ./builder.sh base arm32v6
+      before_install:
+        - /bin/bash pre_install
+      name: "Build armhf"
+
